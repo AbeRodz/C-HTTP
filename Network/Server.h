@@ -25,12 +25,11 @@ struct Server
     int backlog;
     struct sockaddr_in address;
     int socket;
-    void (*launch)(struct Server *server, RouteConfig *config);
 };
 
 struct Server server_constructor(int domain, int service, int protocol, unsigned long interface,
-                                 int port, int backlog, void (*launch)(struct Server *server, RouteConfig *config));
-
+                                 int port, int backlog);
+void start(struct Server *server, RouteConfig config);
 int response(int client_socket, int status_code, const char *json_data);
 int send_with_buffer(int client_socket, const char *data, size_t length);
 

@@ -19,14 +19,28 @@ void index_handler(int client_socket)
         response(client_socket, HTTP_STATUS_INTERNAL_SERVER_ERROR, NULL);
     }
 }
+
+void handler_second(int client_socket)
+{
+    char json[300];
+    snprintf(json, sizeof(json),
+             "{"
+             "   \"index\": \"hello\""
+             "}");
+    if (response(client_socket, HTTP_STATUS_OK, json) < 0)
+    {
+        perror("something happenned...\n");
+        response(client_socket, HTTP_STATUS_INTERNAL_SERVER_ERROR, NULL);
+    }
+}
 // Defines routes
 RouteConfig initialize_routes()
 {
     // Define your routes
     Route routes[] = {
-        {"GET", "/", index_handler}
-        //{"GET", "/users/:id", user_handler},
-        //{"GET", "/products/:code", product_handler},
+        {"GET", "/something", index_handler},
+        {"GET", "/users/:id", handler_second},
+        //{"GET", "/products/:code", index_handler},
         // Add more routes here
     };
 
@@ -44,24 +58,9 @@ int route_handler(const char *http_method, const char *requested_path, RouteConf
     {
 
         Route *route = &config->routes[i];
-        if (route != NULL)
-        {
-            if (route->path != NULL)
-            {
-                printf("CURRENT ROUTE: %s\n", route->path);
-            }
-            else
-            {
-                printf("RDEFINED ROUTE; %s", config->routes[i].path);
-                printf("Route path is NULL\n");
-            }
-        }
-        else
-        {
-            printf("Invalid route\n");
-        }
-
-        if (strcmp(route->method, http_method) == 0 && match_path(route->path, requested_path))
+        int match = match_path(route->path, requested_path);
+        int comp = strcmp(route->method, http_method);
+        if (comp == 0 && match == 0)
         {
             route->handler(*socket);
             return 0;
@@ -71,6 +70,7 @@ int route_handler(const char *http_method, const char *requested_path, RouteConf
 }
 
 // path matcher
+// review this code
 int match_path(const char *route_path, const char *requested_path)
 {
     while (*route_path != '\0' && *requested_path != '\0')
@@ -97,6 +97,10 @@ int match_path(const char *route_path, const char *requested_path)
                 requested_path++;
             }
         }
+        else
+        {
+            return -1;
+        }
     }
-    return -1;
+    return *route_path == '\0' && *requested_path == '\0';
 }
