@@ -113,7 +113,7 @@ void presentation(int port)
     printf("Server running on port: " GRN "%d\n" RESET, port);
 }
 
-void start(struct Server *server, RouteConfig config)
+void start(struct Server *server, RouteConfig *config)
 {
     char buffer[30000];
     char json[300];
@@ -124,19 +124,19 @@ void start(struct Server *server, RouteConfig config)
     int address_length = sizeof(server->address);
     int new_socket;
     // Route *route = &config->routes[0];
-    for (int i = 0; i < config.num_routes; i++)
+    for (int i = 0; i < config->num_routes; i++)
     {
-        printf("Route: Method=%s, Path=%s\n", config.routes[i].method, config.routes[i].path);
+        printf("Route: Method=%s, Path=%s\n", config->routes[i].method, config->routes[i].path);
         // Call the associated request handler function
-        // config.routes[i].handler(123); // Passing a dummy context value
     }
-    for (int i = 0; i < config.num_routes; i++)
+    // debug
+    for (int i = 0; i < config->num_routes; i++)
     {
-        Route route = config.routes[i];
+        Route route = config->routes[i];
         if (&route != NULL)
         {
             printf("config is not NULL\n");
-            printf("%s %d\n", route.path, config.num_routes);
+            printf("%s %d\n", route.path, config->num_routes);
             if (route.method != NULL)
             {
                 printf("CURRENT ROUTE: %s\n", route.method);
@@ -157,15 +157,16 @@ void start(struct Server *server, RouteConfig config)
     while (1)
     {
         new_socket = accept(server->socket, (struct sockaddr *)&server->address, (socklen_t *)&address_length);
+
         read(new_socket, buffer, 30000);
-        printf("%s\n", buffer);
+        printf(GRN "%s\n" RESET, buffer);
         printf("%s\n", json);
         // Extract HTTP method and URL path from the incoming request
         char http_method[10];
         char requested_url[256];
         sscanf(buffer, "%9s %255s", http_method, requested_url);
 
-        if (route_handler(http_method, requested_url, &config, &new_socket) < 0)
+        if (route_handler(http_method, requested_url, config, &new_socket) < 0)
         {
             if (response(new_socket, HTTP_STATUS_NOT_FOUND, "{"
                                                             "   \"error\": \"not found\""
@@ -175,5 +176,6 @@ void start(struct Server *server, RouteConfig config)
             }
         }
         close(new_socket);
+        // memset(buffer, 0, sizeof(buffer)); clears buffer, change to dynamic memory allocation
     }
 }

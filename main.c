@@ -11,5 +11,5 @@ int main()
     struct Server server = server_constructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, 8080, 10);
 
     RouteConfig config = initialize_routes();
-    start(&server, config);
+    start(&server, &config);
 }
