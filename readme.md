@@ -2,6 +2,38 @@
 
 ***This project is for practicing C, and how to make an HTTP Server from scratch***
 
+# Installation and Dependecies
+
+- Clone the repo
+- Make sure you have CMake installed, on Ubuntu run the following:
+    ```bash
+    sudo apt install cmake
+    ```
+***This project uses gcc, it hasn't tested on any other compiler***
+
+## Running
+
+Run on your terminal the following:
+```bash
+chmod +x build.sh
+```
+and finally to build and run the server
+
+```bash
+./build.sh -r 
+```
+if you only want to build without running;
+```bash
+./build.sh
+```
+
+## TODO
+- Add dynamic memory allocation on request body buffer.
+
+- Add json parser.
+
+
+
 ## Expected features
 
 - Mounts a server onto a selected port via sockets.
