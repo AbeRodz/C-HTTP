@@ -5,10 +5,18 @@
 # Installation and Dependecies
 
 - Clone the repo
+
+### Installing on Linux (Ubuntu)
 - Make sure you have CMake installed, on Ubuntu run the following:
     ```bash
     sudo apt install cmake
     ```
+### Installing on MacOS 
+- Make sure you have CMake installed, on Mac run the following:
+    ```bash
+    brew install cmake
+    ```
+
 ***This project uses gcc, it hasn't tested on any other compiler***
 
 ## Running
@@ -26,6 +34,10 @@ if you only want to build without running;
 ```bash
 ./build.sh
 ```
+You'll be received with the following:
+
+![presentation](./Resources/Untitled.jpg)
+
 
 ## TODO
 - Add dynamic memory allocation on request body buffer.
