@@ -113,7 +113,7 @@ void presentation(int port)
     printf("Server running on port: " GRN "%d\n" RESET, port);
 }
 
-void start(struct Server *server, RouteConfig *config)
+void start(struct Server *server, RouteNode *config)
 {
     char buffer[30000];
     char json[300];
@@ -123,36 +123,12 @@ void start(struct Server *server, RouteConfig *config)
              "}");
     int address_length = sizeof(server->address);
     int new_socket;
-    // Route *route = &config->routes[0];
-    for (int i = 0; i < config->num_routes; i++)
-    {
-        printf("Route: Method=%s, Path=%s\n", config->routes[i].method, config->routes[i].path);
-        // Call the associated request handler function
-    }
-    // debug
-    for (int i = 0; i < config->num_routes; i++)
-    {
-        Route route = config->routes[i];
-        if (&route != NULL)
-        {
-            printf("config is not NULL\n");
-            printf("%s %d\n", route.path, config->num_routes);
-            if (route.method != NULL)
-            {
-                printf("CURRENT ROUTE: %s\n", route.method);
-            }
-            else
-            {
-                printf("RDEFINED ROUTE; %s", route.path);
-                printf("Route path is NULL\n");
-            }
-        }
-        else
-        {
-            printf("Invalid route\n");
-        }
-    }
 
+    printf(CYN "------DEFINED ROUTES------\n" RESET);
+    for (int i = 0; i < config->childrenCount; i++)
+    {
+        printf(BLU "%s\n" RESET, config->children[i]->character);
+    }
     presentation(server->port);
     while (1)
     {
@@ -161,16 +137,26 @@ void start(struct Server *server, RouteConfig *config)
         read(new_socket, buffer, 30000);
         printf(GRN "%s\n" RESET, buffer);
         printf("%s\n", json);
+
         // Extract HTTP method and URL path from the incoming request
         char http_method[10];
         char requested_url[256];
         sscanf(buffer, "%9s %255s", http_method, requested_url);
-
-        if (route_handler(http_method, requested_url, config, &new_socket) < 0)
+        int route = route_handler(http_method, requested_url, config, &new_socket);
+        if (route < 0)
         {
             if (response(new_socket, HTTP_STATUS_NOT_FOUND, "{"
                                                             "   \"error\": \"not found\""
                                                             "}") < 0)
+            {
+                close(new_socket);
+            }
+        }
+        else if (route > 0)
+        {
+            if (response(new_socket, HTTP_STATUS_METHOD_NOT_ALLOWED, "{"
+                                                                     "   \"error\": \"method not allowed\""
+                                                                     "}") < 0)
             {
                 close(new_socket);
             }
