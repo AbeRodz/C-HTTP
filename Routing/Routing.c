@@ -2,105 +2,68 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <regex.h>
 #include "Routing.h"
 #include "Network/Server.h"
-#include "HTTP_status/HTTP_status.h"
 
-void index_handler(int client_socket)
+// TODO
+int parse_route_params(const char *route_pattern, const char *path, char *param)
 {
-    char json[300];
-    snprintf(json, sizeof(json),
-             "{"
-             "   \"index\": \"hello\""
-             "}");
-    if (response(client_socket, HTTP_STATUS_OK, json) < 0)
+    // Extract parameter value using placeholders
+    int matched = sscanf(path, route_pattern, param);
+    return matched == 1;
+}
+// handles routing and calls the appropiate route handler or returns an error.
+int route_handler(const char *http_method, const char *requested_path, RouteNode *config, int *socket)
+{
+
+    RouteNode *path = pathFinder(config, requested_path);
+    if (path == NULL)
     {
-        perror("something happenned...\n");
-        response(client_socket, HTTP_STATUS_INTERNAL_SERVER_ERROR, NULL);
+        return -1;
     }
-}
 
-void handler_second(int client_socket)
-{
-    char json[300];
-    snprintf(json, sizeof(json),
-             "{"
-             "   \"index\": \"hello\""
-             "}");
-    if (response(client_socket, HTTP_STATUS_OK, json) < 0)
+    if (strcmp(path->method, http_method) < 0)
     {
-        perror("something happenned...\n");
-        response(client_socket, HTTP_STATUS_INTERNAL_SERVER_ERROR, NULL);
+        return 1;
     }
-}
-// Defines routes
-RouteConfig initialize_routes()
-{
-    // Define your routes
-    Route routes[] = {
-        {"GET", "/something", index_handler},
-        {"GET", "/users/:id", handler_second},
-        //{"GET", "/products/:code", index_handler},
-        // Add more routes here
-    };
-
-    RouteConfig config = {
-        .routes = routes,
-        .num_routes = sizeof(routes) / sizeof(Route),
-    };
-
-    return config;
-}
-// handles routing and calls the appropiate route.
-int route_handler(const char *http_method, const char *requested_path, RouteConfig *config, int *socket)
-{
-    for (int i = 0; i < config->num_routes; i++)
+    if (path->handler != NULL)
     {
-
-        Route *route = &config->routes[i];
-        int match = match_path(route->path, requested_path);
-        int comp = strcmp(route->method, http_method);
-        if (comp == 0 && match == 0)
-        {
-            route->handler(*socket);
-            return 0;
-        }
+        path->handler(*socket);
+        return 0;
     }
     return -1;
 }
 
-// path matcher
-// review this code
-int match_path(const char *route_path, const char *requested_path)
+RouteNode *pathFinder(RouteNode *root, const char *path)
 {
-    while (*route_path != '\0' && *requested_path != '\0')
+
+    RouteNode *current = root;
+
+    while (*path != '\0')
     {
-        if (*route_path == *requested_path || *route_path == ':' || *route_path == '?')
+        const char *segment = path;
+        int i = 0;
+
+        while (*path != '/' && *path != '\0')
         {
-            if (*route_path == ':')
-            {
-                while (*requested_path != '/' && *requested_path != '?' && *requested_path != '\0')
-                {
-                    requested_path++;
-                }
-            }
-            else if (*route_path == '?')
-            {
-                while (*requested_path != '/' && *requested_path != '\0')
-                {
-                    requested_path++;
-                }
-            }
-            else
-            {
-                route_path++;
-                requested_path++;
-            }
+            path++;
         }
-        else
+
+        current = findChild(current, segment);
+
+        if (current == NULL)
         {
-            return -1;
+            return NULL;
+        }
+
+        if (*path == '/')
+        {
+            path++;
         }
     }
-    return *route_path == '\0' && *requested_path == '\0';
+
+    return current;
 }
