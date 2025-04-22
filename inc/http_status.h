@@ -1,5 +1,4 @@
 // http_status.h
-
 #ifndef HTTP_STATUS_H
 #define HTTP_STATUS_H
 
@@ -74,6 +73,7 @@
 #define HTTP_STATUS_NOT_EXTENDED 510
 #define HTTP_STATUS_NETWORK_AUTHENTICATION_REQUIRED 511
 
-#endif /* HTTP_STATUS_H */
 
 const char *get_http_status_text(int status_code);
+
+#endif /* HTTP_STATUS_H */

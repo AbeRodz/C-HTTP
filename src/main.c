@@ -2,10 +2,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include "Network/Server.h"
-#include "Routing/Routing.h"
+#include "server.h"
+#include "routing.h"
 
-#include "HTTP_status/HTTP_status.h"
+#include "http_status.h"
 
 void listUsers(int client_socket)
 {

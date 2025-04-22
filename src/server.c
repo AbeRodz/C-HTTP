@@ -2,9 +2,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include "Server.h"
-// #include "Routing/Routing.h"
-#include "HTTP_status/HTTP_status.h"
+#include "server.h"
+#include "http_status.h"
 // Define HTTP response headers
 const char *http_response_headers = "HTTP/1.1 %d %s\r\n"
                                     "Content-Type: application/json\r\n"
