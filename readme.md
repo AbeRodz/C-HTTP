@@ -11,7 +11,7 @@
     ```bash
     sudo apt install cmake
     ```
-### Installing on MacOS 
+### Installing on MacOS
 - Make sure you have CMake installed, on Mac run the following:
     ```bash
     brew install cmake
@@ -28,7 +28,7 @@ chmod +x build.sh
 and finally to build and run the server
 
 ```bash
-./build.sh -r 
+./build.sh -r
 ```
 if you only want to build without running;
 ```bash

@@ -1,6 +1,6 @@
 // http_statuses.c
 
-#include "HTTP_status.h"
+#include "http_status.h"
 
 // Define HTTP status text strings
 static const char *http_status_texts[] = {
