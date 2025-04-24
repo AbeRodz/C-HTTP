@@ -53,8 +53,7 @@ void dummy_handler(int sock) {
 }
 
 /** @test asserts that a route node is created correctly */
-void test_newNode_create_routing_node(void)
-{
+void test_newNode_create_routing_node(void) {
     TEST_ASSERT_NOT_NULL(root);
     TEST_ASSERT_EQUAL_STRING("root", root->character);
     TEST_ASSERT_NULL(root->handler);
@@ -63,49 +62,39 @@ void test_newNode_create_routing_node(void)
 }
 
 /** @test asserts that a route can have subroutes (children) */
-void test_node_increment_childrenCount(void)
-{
+void test_node_increment_childrenCount(void) {
     addChild(parent, child);
 
     TEST_ASSERT_EQUAL(1, parent->childrenCount);
     TEST_ASSERT_EQUAL_PTR(child, parent->children[0]);
-
 }
 
 /** @test asserts that a search can be performed to find a children route */
-void test_findChild_return_children_node(void)
-{
+void test_findChild_return_children_node(void) {
     addChild(parent, child);
 
-    RouteNode *found = findChild(parent, "child");
+    RouteNode * found = findChild(parent, "child");
     TEST_ASSERT_NOT_NULL(found);
     TEST_ASSERT_EQUAL_PTR(child, found);
-
 }
 
 /** @test asserts that a route exists */
-void test_pathFinder_locate_existing_path(void)
-{
+void test_pathFinder_locate_existing_path(void) {
     addRouteNode(root, "users/create", "POST", dummy_handler);
 
-    RouteNode *found = pathFinder(root, "users/create");
+    RouteNode * found = pathFinder(root, "users/create");
 
     TEST_ASSERT_NOT_NULL(found);
     TEST_ASSERT_EQUAL_PTR(dummy_handler, found->handler);
-
-
 }
 
 /** @test asserts that a route does not exists */
-void test_pathFinder_nonexistent_path(void)
-{
+void test_pathFinder_nonexistent_path(void) {
     addRouteNode(root, "users/create", "POST", dummy_handler);
 
-    RouteNode *found = pathFinder(root, "users/delete");
+    RouteNode * found = pathFinder(root, "users/delete");
     TEST_ASSERT_NULL(found);
-
 }
-
 
 /* === Public function implementation ========================================================== */
 
