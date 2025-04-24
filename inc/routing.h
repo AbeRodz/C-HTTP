@@ -53,4 +53,8 @@ RouteNode *findChild(struct RouteNode *node, const char *segment);
 /// @return (int) An error defined as an int.
 int route_handler(const char *http_method, const char *requested_path, RouteNode *config, int *socket);
 
+
+/// @brief Frees a children RouteNode in a parent Node recursively.
+/// @param node Parent Node to search.
+void freeRouteTree(RouteNode *node);
 #endif /* ROUTING_H */

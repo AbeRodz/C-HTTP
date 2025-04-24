@@ -61,6 +61,6 @@ int main()
     addRouteNode(root, "/users/create/something", "POST", NULL);
 
     start(&server, root);
-    free(root);
+    freeRouteTree(root);
     return 0;
 }
