@@ -142,3 +142,12 @@ RouteNode *findChild(RouteNode *node, const char *segment)
     }
     return NULL;
 }
+
+// helper function to free memory from each node.
+void freeRouteTree(RouteNode *node) {
+    if (node == NULL) return;
+    for (int i = 0; i < node->childrenCount; ++i) {
+        freeRouteTree(node->children[i]);
+    }
+    free(node);
+}

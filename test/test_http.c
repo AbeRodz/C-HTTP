@@ -38,19 +38,7 @@ void setUp(void) {
 
 }
 
-/** @test initiates all LEDs as turned off. */
-// void test_get_http_status_text_known_codes(void) {
-//     TEST_ASSERT_EQUAL_STRING("OK", get_http_status_text(HTTP_STATUS_OK));
-//     TEST_ASSERT_EQUAL_STRING("Not Found", get_http_status_text(HTTP_STATUS_NOT_FOUND));
-//     TEST_ASSERT_EQUAL_STRING("I'm a teapot", get_http_status_text(HTTP_STATUS_IM_A_TEAPOT));
-//     TEST_ASSERT_EQUAL_STRING("Internal Server Error", get_http_status_text(HTTP_STATUS_INTERNAL_SERVER_ERROR));
-// }
-
-// void test_get_http_status_text_unknown_code(void) {
-//     TEST_ASSERT_EQUAL_STRING("Unknown Status", get_http_status_text(999));
-//     TEST_ASSERT_EQUAL_STRING("Unknown Status", get_http_status_text(-1));
-// }
-
+/** @test evaluates 200 status codes */
 void test_get_http_status_text_success_statuses(void) {
     TEST_ASSERT_EQUAL_STRING("OK", get_http_status_text(HTTP_STATUS_OK));
     TEST_ASSERT_EQUAL_STRING("Created", get_http_status_text(HTTP_STATUS_CREATED));
@@ -64,6 +52,7 @@ void test_get_http_status_text_success_statuses(void) {
     TEST_ASSERT_EQUAL_STRING("IM Used", get_http_status_text(HTTP_STATUS_IM_USED));
 }
 
+/** @test evaluates 400 status codes */
 void test_get_http_status_text_client_statuses(void) {
     TEST_ASSERT_EQUAL_STRING("Bad Request", get_http_status_text(HTTP_STATUS_BAD_REQUEST));
     TEST_ASSERT_EQUAL_STRING("Unauthorized", get_http_status_text(HTTP_STATUS_UNAUTHORIZED));
@@ -87,6 +76,7 @@ void test_get_http_status_text_client_statuses(void) {
     TEST_ASSERT_EQUAL_STRING("Too Many Requests", get_http_status_text(HTTP_STATUS_TOO_MANY_REQUESTS));
 }
 
+/** @test evaluates 500 status codes */
 void test_get_http_status_text_server_statuses(void) {
     TEST_ASSERT_EQUAL_STRING("Internal Server Error", get_http_status_text(HTTP_STATUS_INTERNAL_SERVER_ERROR));
     TEST_ASSERT_EQUAL_STRING("Not Implemented", get_http_status_text(HTTP_STATUS_NOT_IMPLEMENTED));

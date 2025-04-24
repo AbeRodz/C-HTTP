@@ -30,80 +30,80 @@ SPDX-License-Identifier: MIT
 /* === Macros definitions ====================================================================== */
 
 /* === Private data type declarations ========================================================== */
-/* === Private variable declarations =========================================================== */
+static RouteNode *root, *parent, *child = NULL;
 
+/* === Private variable declarations =========================================================== */
 /* === Private function declarations =========================================================== */
 
 void setUp(void) {
+    root = newNode("root");
+    parent = newNode("parent");
+    child = newNode("child");
+}
 
+void tearDown(void) {
+    if (root != NULL) {
+        freeRouteTree(root);
+        root = NULL;
+    }
 }
 // Dummy handler for testing
 void dummy_handler(int sock) {
-    (void)sock; // silence unused warning
+    (void)sock;
 }
 
-/** @test initiates all LEDs as turned off. */
-void test_newNode_should_create_node_with_correct_name(void)
+/** @test asserts that a route node is created correctly */
+void test_newNode_create_routing_node(void)
 {
-    RouteNode *node = newNode("users");
-    TEST_ASSERT_NOT_NULL(node);
-    TEST_ASSERT_EQUAL_STRING("users", node->character);
-    TEST_ASSERT_NULL(node->handler);
-    TEST_ASSERT_NULL(node->method);
-    TEST_ASSERT_EQUAL(0, node->childrenCount);
-    free(node);
+    TEST_ASSERT_NOT_NULL(root);
+    TEST_ASSERT_EQUAL_STRING("root", root->character);
+    TEST_ASSERT_NULL(root->handler);
+    TEST_ASSERT_NULL(root->method);
+    TEST_ASSERT_EQUAL(0, root->childrenCount);
 }
 
-void test_addChild_should_increment_childrenCount(void)
+/** @test asserts that a route can have subroutes (children) */
+void test_node_increment_childrenCount(void)
 {
-    RouteNode *parent = newNode("parent");
-    RouteNode *child = newNode("child");
-
     addChild(parent, child);
 
     TEST_ASSERT_EQUAL(1, parent->childrenCount);
     TEST_ASSERT_EQUAL_PTR(child, parent->children[0]);
 
-    free(parent);
-    free(child);
 }
 
-void test_findChild_should_return_matching_node(void)
+/** @test asserts that a search can be performed to find a children route */
+void test_findChild_return_children_node(void)
 {
-    RouteNode *parent = newNode("root");
-    RouteNode *child = newNode("users");
     addChild(parent, child);
 
-    RouteNode *found = findChild(parent, "users");
+    RouteNode *found = findChild(parent, "child");
     TEST_ASSERT_NOT_NULL(found);
     TEST_ASSERT_EQUAL_PTR(child, found);
 
-    free(parent);
-    free(child);
 }
 
-void test_pathFinder_should_locate_existing_path(void)
+/** @test asserts that a route exists */
+void test_pathFinder_locate_existing_path(void)
 {
-    RouteNode *root = newNode("/");
     addRouteNode(root, "users/create", "POST", dummy_handler);
 
     RouteNode *found = pathFinder(root, "users/create");
+
     TEST_ASSERT_NOT_NULL(found);
     TEST_ASSERT_EQUAL_PTR(dummy_handler, found->handler);
 
-    free(root);
-    free(found);
+
 }
 
-void test_pathFinder_should_return_null_for_nonexistent_path(void)
+/** @test asserts that a route does not exists */
+void test_pathFinder_nonexistent_path(void)
 {
-    RouteNode *root = newNode("/");
     addRouteNode(root, "users/create", "POST", dummy_handler);
 
     RouteNode *found = pathFinder(root, "users/delete");
     TEST_ASSERT_NULL(found);
 
-    free(root);
 }
 
 
