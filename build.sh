@@ -1,21 +1,15 @@
 #!/bin/bash
 
-# Create a build directory if it doesn't exist
+# Create build directory and go into it
 mkdir -p build
-
 cd build
 
-# Run CMake to generate Makefiles
-cmake ..
+# Run cmake and build
+cmake .. || exit 1
+make || exit 1
 
-# Build
-make
-
-if [ "$#" -gt 0 ] && [ "$1" == "-r" ]; then
-    # Run the server with '-r' option
+# Optional: run executable
+if [ "$1" == "-r" ]; then
     echo -e "\nRunning Server..."
     ./main
 fi
-
-# Return to the project root directory
-cd ..
