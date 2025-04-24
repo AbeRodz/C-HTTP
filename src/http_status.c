@@ -3,7 +3,7 @@
 #include "http_status.h"
 
 // Define HTTP status text strings
-static const char *http_status_texts[] = {
+static const char * http_status_texts[] = {
     [HTTP_STATUS_CONTINUE] = "Continue",
     [HTTP_STATUS_SWITCHING_PROTOCOLS] = "Switching Protocols",
     [HTTP_STATUS_PROCESSING] = "Processing",
@@ -67,8 +67,7 @@ static const char *http_status_texts[] = {
     [HTTP_STATUS_NETWORK_AUTHENTICATION_REQUIRED] = "Network Authentication Required"};
 
 // Function to get HTTP status text based on the status code
-const char *get_http_status_text(int status_code)
-{
-    const char *status_text = http_status_texts[status_code];
+const char * get_http_status_text(int status_code) {
+    const char * status_text = http_status_texts[status_code];
     return status_text ? status_text : "Unknown Status";
 }
