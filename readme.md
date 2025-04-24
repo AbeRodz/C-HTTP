@@ -1,6 +1,6 @@
 # C-HTTP
 
-***This project is for practicing C, and how to make an HTTP Server from scratch***
+***Simple and lightweight HTTP Server from scratch in C***
 
 # Installation and Dependecies
 
